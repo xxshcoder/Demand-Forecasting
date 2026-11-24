@@ -1,0 +1,21 @@
+FROM apache/airflow:2.10.5-python3.11
+
+USER root
+ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+
+COPY requirements.txt /requirements.txt
+COPY requirements-dev.txt /requirements-dev.txt
+RUN pip install --no-cache-dir -r /requirements.txt \
+    && pip install --no-cache-dir "apache-airflow==2.10.5" "SQLAlchemy>=1.4.36,<2.1"
+
+COPY params.yaml /opt/airflow/params.yaml
+COPY src/ /opt/airflow/src/
+COPY dags/ /opt/airflow/dags/
+COPY scripts/ /opt/airflow/scripts/
+COPY data/ /opt/airflow/data/
+
+ENV PYTHONPATH=/opt/airflow \
+    MLFLOW_TRACKING_URI=http://mlflow:5000 \
+    DATABASE_URL=postgresql+psycopg2://postgres:postgres@postgres:5432/app
+
+USER airflow
