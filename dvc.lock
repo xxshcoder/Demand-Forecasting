@@ -9,8 +9,8 @@ stages:
       size: 17858471
     - path: params.yaml
       hash: md5
-      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
-      size: 1096
+      md5: a09646b9353767eb80e0134a4900dcf5
+      size: 1134
     - path: src/data
       hash: md5
       md5: ba4668bbcf72b23ddfe946f117a21684.dir
@@ -30,12 +30,12 @@ stages:
       size: 2057926
     - path: params.yaml
       hash: md5
-      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
-      size: 1096
+      md5: a09646b9353767eb80e0134a4900dcf5
+      size: 1134
     - path: src/features
       hash: md5
-      md5: 607e5643fdebf4c9182af53e1f51587a.dir
-      size: 9005
+      md5: 519aea4c29ae056ece72a60d67e26940.dir
+      size: 9241
       nfiles: 3
     outs:
     - path: data/processed/features.parquet
@@ -59,23 +59,38 @@ stages:
       size: 2057926
     - path: params.yaml
       hash: md5
-      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
-      size: 1096
-    - path: src/models
+      md5: a09646b9353767eb80e0134a4900dcf5
+      size: 1134
+    - path: src/models/__init__.py
       hash: md5
-      md5: 02c275e5853683698d5b46c6907b3d82.dir
-      size: 40905
-      nfiles: 9
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: src/models/baselines.py
+      hash: md5
+      md5: ea01ce86627635bc21bbeb87f0e26c7f
+      size: 1810
+    - path: src/models/metrics.py
+      hash: md5
+      md5: 575d4da1e525c76b178fa327f5e44781
+      size: 1767
+    - path: src/models/nn.py
+      hash: md5
+      md5: 3b9b9e86d5515cc8e616b7d5203888ac
+      size: 9443
+    - path: src/models/sklearn_models.py
+      hash: md5
+      md5: 8f0898c1d42850b4240f52b14e9ad25b
+      size: 2972
+    - path: src/models/train.py
+      hash: md5
+      md5: 228fee45ae9b0b667e9aac3ca99eb2f4
+      size: 10011
     outs:
     - path: reports/predictions
       hash: md5
       md5: bdd07c122f41ea7dc86ee19e062e5b9b.dir
       size: 6803705
       nfiles: 5
-    - path: reports/train_summary.json
-      hash: md5
-      md5: b81561c4636a2859ceb217316a607fd3
-      size: 2555
   evaluate:
     cmd: python -m src.models.evaluate
     deps:
@@ -85,8 +100,8 @@ stages:
       size: 2057926
     - path: params.yaml
       hash: md5
-      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
-      size: 1096
+      md5: a09646b9353767eb80e0134a4900dcf5
+      size: 1134
     - path: reports/predictions
       hash: md5
       md5: bdd07c122f41ea7dc86ee19e062e5b9b.dir
@@ -98,38 +113,20 @@ stages:
       size: 2555
     - path: src/models/evaluate.py
       hash: md5
-      md5: 5f0b66c94f11684c5c92eb5abc22d426
-      size: 3656
-    outs:
-    - path: reports/baseline_metrics.json
-      hash: md5
-      md5: b74d0fb4b655aa830abf76dd4631f228
-      size: 311
-    - path: reports/evaluation.json
-      hash: md5
-      md5: d07486f3086d00a116c942b814b73ad2
-      size: 1762
+      md5: 97c92c69a5af6c96361403d3a7061a7d
+      size: 3751
   compare:
     cmd: python -m src.models.compare
     deps:
     - path: params.yaml
       hash: md5
-      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
-      size: 1096
+      md5: a09646b9353767eb80e0134a4900dcf5
+      size: 1134
     - path: reports/evaluation.json
       hash: md5
       md5: d07486f3086d00a116c942b814b73ad2
       size: 1762
     - path: src/models/compare.py
       hash: md5
-      md5: d0c91cfbffda0a0e6a1d01dfebd62270
-      size: 3122
-    outs:
-    - path: reports/model_comparison.csv
-      hash: md5
-      md5: a27d35318087de36c84ce65793e19e89
-      size: 441
-    - path: reports/model_comparison.md
-      hash: md5
-      md5: 39090223dd4b478e41114c2a9789ce39
-      size: 523
+      md5: 0070dd4d600a4c8efc29d86d1d48c820
+      size: 3200

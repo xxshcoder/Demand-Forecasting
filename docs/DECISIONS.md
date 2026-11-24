@@ -31,17 +31,24 @@ Every fallback or deviation from `plan.md` is recorded here, with the reason.
 
 ## DVC pipeline
 
-- `reports/baseline_metrics.json` is declared as an output of the `evaluate` stage, not `train`:
+- `reports/baseline_metrics.json` is produced by the `evaluate` stage, not `train`:
   `src/models/evaluate.py` derives baseline lag features from processed sales and scores both
   baselines there. Declaring it under `train` made the first `dvc repro` fail after all models
-  had been trained; the stage definition was corrected and the existing outputs were recorded.
-- DVC adds generated report outputs to `reports/.gitignore`. That file is committed with an
-  explicit comment instead of the generated patterns so the small, reviewable artifacts
-  (comparison table, metrics JSON, drift/latency reports) are versioned; only the large
-  per-request prediction CSVs remain ignored by the root `.gitignore`.
+  had been trained; the stage definition was corrected and the outputs were recorded.
+- Small report artifacts (comparison table, metrics JSON, drift/latency reports) are committed
+  to Git, not declared as DVC outputs. DVC refuses to commit an output that Git already tracks,
+  and the definition of done requires the comparison table to be committed. The stages still run
+  through `dvc repro` and regenerate the files; only the large `reports/predictions/` directory
+  and processed/reference data are DVC-cached.
 - Interrupting a retrain left `reports/train_summary.json` missing while DVC's cache still held
   the successful outputs. `dvc checkout` restored them and `dvc commit -f` recorded the final
   code state, after which `dvc status` was clean and `dvc repro` was a no-op.
+- The `train` stage lists the exact model files it imports instead of the whole `src/models`
+  directory. Adding registry-only code (`promote.py`) to that directory had invalidated every
+  training hash and triggered unnecessary 13-minute retrains on later `dvc repro` runs.
+- Git checks text files out with CRLF on this Windows workstation while DVC had locked LF hashes.
+  The final `dvc commit -f` records the checked-out bytes, so local `dvc status` is clean; on a
+  different platform DVC may legitimately rebuild the stages, which is reproducible from raw data.
 
 ## params.yaml additions
 
