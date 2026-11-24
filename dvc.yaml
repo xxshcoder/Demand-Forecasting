@@ -28,8 +28,6 @@ stages:
     outs:
       - reports/train_summary.json
       - reports/predictions
-    metrics:
-      - reports/baseline_metrics.json
 
   evaluate:
     cmd: python -m src.models.evaluate
@@ -40,6 +38,7 @@ stages:
       - src/models/evaluate.py
       - params.yaml
     metrics:
+      - reports/baseline_metrics.json
       - reports/evaluation.json
 
   compare:
