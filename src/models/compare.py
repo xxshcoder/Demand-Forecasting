@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import json
-
 import pandas as pd
 
 from ..config import ROOT, load_params
@@ -71,11 +69,8 @@ def main() -> None:
     )
     markdown = f"{header}\n{body}\n\n{interpretation}\n"
     (ROOT / "reports" / "model_comparison.md").write_text(markdown, encoding="utf-8")
-    evaluation = json.loads((ROOT / "reports" / "evaluation.json").read_text(encoding="utf-8"))
-    evaluation["interpretation"] = interpretation
-    (ROOT / "reports" / "evaluation.json").write_text(
-        json.dumps(evaluation, indent=2) + "\n", encoding="utf-8"
-    )
+    # Do not rewrite evaluation.json: it is an output of the evaluate stage, and
+    # mutating it here makes DVC see a permanently dirty pipeline.
     print(markdown)
 
 

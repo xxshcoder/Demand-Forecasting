@@ -66,7 +66,10 @@ def test_evaluate_and_compare_with_saved_predictions(tiny_processed, params, mon
     assert table.loc["moving_average", "MAE"] == 2
     compare.main()
     assert (reports / "model_comparison.csv").exists()
-    assert "interpretation" in (reports / "evaluation.json").read_text(encoding="utf-8")
+    comparison_md = (reports / "model_comparison.md").read_text(encoding="utf-8")
+    assert "Best learned model" in comparison_md
+    # evaluate.json belongs to the evaluate stage; compare must not mutate it.
+    assert "interpretation" not in (reports / "evaluation.json").read_text(encoding="utf-8")
 
 
 def test_baseline_metrics_writer(tiny_processed, params, monkeypatch, tmp_path):

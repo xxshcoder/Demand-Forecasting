@@ -22,6 +22,7 @@ models:
   nn: { hidden: [128, 64], dropout: 0.1, lr: 0.001, epochs: 30, batch_size: 1024, seed: 42, device: cpu, embedding_dim: 8, early_stop_days: 14, early_stop_patience: 3 }
 mlflow:
   experiment_name: demand-forecasting
+  promotion_experiment_name: demand-forecasting-promotions
   registered_model_name: demand-forecaster
   production_alias: production
 promotion:
