@@ -22,3 +22,4 @@ One line per completed plan step (date — step — result).
 - 2026-11-24 — DVC fix — report artifacts removed from DVC outputs so Git can commit them; `train` deps narrowed to the exact model files; `dvc status` clean, `dvc repro` no-op and `dvc push` up to date.
 - 2026-11-24 — Final cleanup — lint/format clean and 59/59 tests at 83.17% coverage; Docker/Postgres/Kaggle limitations recorded in `docs/DECISIONS.md` and `docs/HANDOFF.md`; tagged `v1.0.0`.
 - 2026-11-24 — Documentation — expanded `README.md` with architecture, setup paths, configuration, pipeline stages, API/DAG/monitoring guides, artifacts, measured results, verification status and troubleshooting.
+- 2026-11-24 — Documentation — removed the public Human handoff section from `README.md`; the detailed handoff remains in `docs/HANDOFF.md`.

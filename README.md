@@ -21,7 +21,6 @@ Predict next-day unit sales per store and item, and demonstrate the complete mac
 - [Design decisions and scaling](#design-decisions-and-scaling)
 - [Roadmap and known limitations](#roadmap-and-known-limitations)
 - [Dataset source and license](#dataset-source-and-license)
-- [Human handoff](#human-handoff)
 
 ---
 
@@ -679,17 +678,3 @@ Primary dataset: Kaggle *Store Item Demand Forecasting Challenge* (<https://www.
 | DVC reports changed dependencies after a Git checkout | Windows CRLF vs LF line endings | Harmless; rerun `python -m dvc repro` from raw data or reconcile with `python -m dvc commit -f` after reviewing the diff |
 | Docker commands fail | Docker CLI/daemon unavailable | Use the local SQLite/uvicorn path in section 4B |
 | Drift report shows no drift after `--shifted` traffic | The API was not running, or logs came from a different `DATABASE_URL` | Check the seed script output and point `DATABASE_URL` at the same database used by the API |
-
----
-
-## Human handoff
-
-The build agent cannot perform the following; they remain explicit placeholders:
-
-1. Add Kaggle credentials and run `scripts/download_data.sh` to replace synthetic data.
-2. Capture `docs/images/mlflow_compare.png`.
-3. Capture `docs/images/airflow_dag.png`.
-4. Record a 2–3 minute demo video/GIF of Compose up, DAG trigger and API prediction.
-5. Run Docker Compose acceptance and note the API image size in this README.
-6. Push to GitHub, enable Actions, and optionally provide a deployment URL.
-7. Copy the prepared bullet from `docs/RESUME_NUMBERS.md` into the resume, replacing the local latency with a Docker/Compose measurement if desired.
