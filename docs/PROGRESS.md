@@ -19,4 +19,5 @@ One line per completed plan step (date — step — result).
 - 2026-11-24 — 4.1 Drift verified — 100 sampled in-distribution requests produced no drift; 100 sales×2 requests flagged all 10 sales-derived features in `reports/drift_report.md`.
 - 2026-11-24 — 4.3 Latency measured — 1,000 requests / concurrency 10, 0 errors, p50 1,074.7 ms, p95 1,498.4 ms, p99 1,725.4 ms, 9.06 req/s in `reports/latency.json`.
 - 2026-11-24 — Phase merges — phase 2 (features/models) and phase 3 (registry/serving/DAG) verified and merged to `main`.
-- 2026-11-24 — Final cleanup — `dvc status` clean, `dvc repro` no-op, `dvc push` up to date; lint/format clean and 59/59 tests at 83.17% coverage; Docker/Postgres/Kaggle limitations recorded in `docs/DECISIONS.md` and `docs/HANDOFF.md`; tagged `v1.0.0`.
+- 2026-11-24 — DVC fix — report artifacts removed from DVC outputs so Git can commit them; `train` deps narrowed to the exact model files; `dvc status` clean, `dvc repro` no-op and `dvc push` up to date.
+- 2026-11-24 — Final cleanup — lint/format clean and 59/59 tests at 83.17% coverage; Docker/Postgres/Kaggle limitations recorded in `docs/DECISIONS.md` and `docs/HANDOFF.md`; tagged `v1.0.0`.
