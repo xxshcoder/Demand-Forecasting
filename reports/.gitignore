@@ -1,0 +1,2 @@
+# Large per-model prediction CSVs are ignored by the repository root.
+# Small, reproducible report artifacts are committed so results can be reviewed.
