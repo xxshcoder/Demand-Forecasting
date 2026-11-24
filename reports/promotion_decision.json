@@ -1,0 +1,44 @@
+{
+  "run_id": "ee985c0a172840628ef101bf758ac00e",
+  "candidate_version": "2",
+  "candidate_metrics": {
+    "mae": 2.588048139139925,
+    "rmse": 3.7420291179111294,
+    "mape": 15.251528518598878,
+    "wape": 14.612164565256244
+  },
+  "production": {
+    "version": 1,
+    "run_id": "3f5a277e7cec44a0b281baef212b2adf",
+    "name": "demand-forecaster",
+    "aliases": [
+      "production"
+    ]
+  },
+  "production_metrics": {
+    "mae": 2.1200175826231664,
+    "rmse": 3.0333942542170225,
+    "mape": 12.555603867580531,
+    "wape": 11.969655946516218
+  },
+  "baseline_metrics": {
+    "last_week": {
+      "mae": 3.4707555555555554,
+      "rmse": 5.074853035638897,
+      "mape": 19.5283809496894,
+      "wape": 19.59594590864493,
+      "run_id": "49120d5d1b724098ae2e4a66fabd6212",
+      "model_type": "baseline"
+    },
+    "moving_average": {
+      "mae": 3.3513873015873017,
+      "rmse": 4.7448811420471,
+      "mape": 19.629466367830474,
+      "wape": 18.921990681741356,
+      "run_id": "0703711ff23d4f19b694dcd059c03a18",
+      "model_type": "baseline"
+    }
+  },
+  "approved": false,
+  "reason": "Refused: relative mae improvement -22.0767% < required 0.5000%."
+}
