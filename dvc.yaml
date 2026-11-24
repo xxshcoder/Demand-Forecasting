@@ -23,10 +23,14 @@ stages:
     deps:
       - data/processed/features.parquet
       - data/processed/sales.parquet
-      - src/models
+      - src/models/__init__.py
+      - src/models/baselines.py
+      - src/models/metrics.py
+      - src/models/sklearn_models.py
+      - src/models/nn.py
+      - src/models/train.py
       - params.yaml
     outs:
-      - reports/train_summary.json
       - reports/predictions
 
   evaluate:
@@ -37,9 +41,6 @@ stages:
       - data/processed/sales.parquet
       - src/models/evaluate.py
       - params.yaml
-    metrics:
-      - reports/baseline_metrics.json
-      - reports/evaluation.json
 
   compare:
     cmd: python -m src.models.compare
@@ -47,7 +48,3 @@ stages:
       - reports/evaluation.json
       - src/models/compare.py
       - params.yaml
-    metrics:
-      - reports/model_comparison.csv
-    outs:
-      - reports/model_comparison.md

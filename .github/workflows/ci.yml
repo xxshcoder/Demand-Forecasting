@@ -1,0 +1,48 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: sqlite:///mlflow.db
+      DATASET_LABEL: synthetic
+      SKIP_MODEL_REFRESH: "1"
+      ENABLE_MODEL_POLLING: "0"
+      DATABASE_URL: sqlite:///ci_predictions.db
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt -r requirements-dev.txt
+      - name: Lint and format check
+        run: |
+          python -m ruff check .
+          python -m ruff format --check .
+      - name: Generate synthetic data and features
+        run: |
+          python scripts/make_synthetic_data.py --out data/raw/train.csv --seed 42
+          python -m src.data.prepare
+          python -m src.features.build
+      - name: Train and compare models
+        run: |
+          python -m src.models.train
+          python -m src.models.evaluate
+          python -m src.models.compare
+      - name: Unit tests with coverage
+        run: python -m pytest --cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=80 -q
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+      - name: Build API image
+        run: docker build -t demand-api:ci .

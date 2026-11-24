@@ -22,10 +22,33 @@ Every fallback or deviation from `plan.md` is recorded here, with the reason.
 - `psycopg2-binary==2.9.11` has no Python 3.15 wheel and a source build needs `pg_config`, which
   is absent locally. Local verification therefore uses SQLite (`DATABASE_URL=sqlite:///…`); the
   Docker images and CI use Python 3.11, where the pinned wheel installs normally.
+- The zero-restart alias swap was verified by changing the registry `production` alias from v1 to v2 and back while the API kept running. This tests the alias-polling mechanism only; v2 (linear) was **refused** by the promotion gate, so it was never approved as production by the pipeline.
+- `scripts/seed_demo_traffic.py` samples real processed histories across all store/item series for the in-distribution batch, then doubles only `recent_sales` for the shifted batch. The first version used a single fixed series, which flagged identifier drift even for normal traffic.
 - All model artifacts are logged as `mlflow.pyfunc` models rather than `mlflow.sklearn` models.
   MLflow 3 validates sklearn saves with skops, which rejects the custom baseline class, HGB's
   `TreePredictor` and the categorical-id transformer. `pyfunc` keeps one loading path for every
   model in the API and promotion gate, with an MLflow signature and input example on each run.
+
+## DVC pipeline
+
+- `reports/baseline_metrics.json` is produced by the `evaluate` stage, not `train`:
+  `src/models/evaluate.py` derives baseline lag features from processed sales and scores both
+  baselines there. Declaring it under `train` made the first `dvc repro` fail after all models
+  had been trained; the stage definition was corrected and the outputs were recorded.
+- Small report artifacts (comparison table, metrics JSON, drift/latency reports) are committed
+  to Git, not declared as DVC outputs. DVC refuses to commit an output that Git already tracks,
+  and the definition of done requires the comparison table to be committed. The stages still run
+  through `dvc repro` and regenerate the files; only the large `reports/predictions/` directory
+  and processed/reference data are DVC-cached.
+- Interrupting a retrain left `reports/train_summary.json` missing while DVC's cache still held
+  the successful outputs. `dvc checkout` restored them and `dvc commit -f` recorded the final
+  code state, after which `dvc status` was clean and `dvc repro` was a no-op.
+- The `train` stage lists the exact model files it imports instead of the whole `src/models`
+  directory. Adding registry-only code (`promote.py`) to that directory had invalidated every
+  training hash and triggered unnecessary 13-minute retrains on later `dvc repro` runs.
+- Git checks text files out with CRLF on this Windows workstation while DVC had locked LF hashes.
+  The final `dvc commit -f` records the checked-out bytes, so local `dvc status` is clean; on a
+  different platform DVC may legitimately rebuild the stages, which is reproducible from raw data.
 
 ## params.yaml additions
 
@@ -54,6 +77,8 @@ Every fallback or deviation from `plan.md` is recorded here, with the reason.
 - `monitoring.psi_bins` — likewise needed for the PSI bin count (default 10).
 - `DATASET_LABEL` — an environment variable (not a hyperparameter) tags runs with their
   provenance so synthetic and Kaggle results can never be confused.
+- `mlflow.promotion_experiment_name` — promotion decisions are logged in a separate experiment
+  so the training experiment contains exactly one run per model (the plan's five-run check).
 
 ## Interview notes
 
