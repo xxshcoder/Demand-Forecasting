@@ -1,0 +1,135 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python -m src.data.prepare
+    deps:
+    - path: data/raw/train.csv
+      hash: md5
+      md5: 833f6c156a74eaa02e11c08962b36df2
+      size: 17858471
+    - path: params.yaml
+      hash: md5
+      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
+      size: 1096
+    - path: src/data
+      hash: md5
+      md5: ba4668bbcf72b23ddfe946f117a21684.dir
+      size: 8610
+      nfiles: 5
+    outs:
+    - path: data/processed/sales.parquet
+      hash: md5
+      md5: 7eba29a18ba6ea6e445e55ba0660ec40
+      size: 2057926
+  features:
+    cmd: python -m src.features.build
+    deps:
+    - path: data/processed/sales.parquet
+      hash: md5
+      md5: 7eba29a18ba6ea6e445e55ba0660ec40
+      size: 2057926
+    - path: params.yaml
+      hash: md5
+      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
+      size: 1096
+    - path: src/features
+      hash: md5
+      md5: 607e5643fdebf4c9182af53e1f51587a.dir
+      size: 9005
+      nfiles: 3
+    outs:
+    - path: data/processed/features.parquet
+      hash: md5
+      md5: bd2adcb58ccc8bfb24a79df178a98ab5
+      size: 22932974
+    - path: data/reference/train_features.parquet
+      hash: md5
+      md5: e2d9332fd025699838d3ff718738bc6e
+      size: 20187567
+  train:
+    cmd: python -m src.models.train
+    deps:
+    - path: data/processed/features.parquet
+      hash: md5
+      md5: bd2adcb58ccc8bfb24a79df178a98ab5
+      size: 22932974
+    - path: data/processed/sales.parquet
+      hash: md5
+      md5: 7eba29a18ba6ea6e445e55ba0660ec40
+      size: 2057926
+    - path: params.yaml
+      hash: md5
+      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
+      size: 1096
+    - path: src/models
+      hash: md5
+      md5: 02c275e5853683698d5b46c6907b3d82.dir
+      size: 40905
+      nfiles: 9
+    outs:
+    - path: reports/predictions
+      hash: md5
+      md5: bdd07c122f41ea7dc86ee19e062e5b9b.dir
+      size: 6803705
+      nfiles: 5
+    - path: reports/train_summary.json
+      hash: md5
+      md5: b81561c4636a2859ceb217316a607fd3
+      size: 2555
+  evaluate:
+    cmd: python -m src.models.evaluate
+    deps:
+    - path: data/processed/sales.parquet
+      hash: md5
+      md5: 7eba29a18ba6ea6e445e55ba0660ec40
+      size: 2057926
+    - path: params.yaml
+      hash: md5
+      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
+      size: 1096
+    - path: reports/predictions
+      hash: md5
+      md5: bdd07c122f41ea7dc86ee19e062e5b9b.dir
+      size: 6803705
+      nfiles: 5
+    - path: reports/train_summary.json
+      hash: md5
+      md5: b81561c4636a2859ceb217316a607fd3
+      size: 2555
+    - path: src/models/evaluate.py
+      hash: md5
+      md5: 5f0b66c94f11684c5c92eb5abc22d426
+      size: 3656
+    outs:
+    - path: reports/baseline_metrics.json
+      hash: md5
+      md5: b74d0fb4b655aa830abf76dd4631f228
+      size: 311
+    - path: reports/evaluation.json
+      hash: md5
+      md5: d07486f3086d00a116c942b814b73ad2
+      size: 1762
+  compare:
+    cmd: python -m src.models.compare
+    deps:
+    - path: params.yaml
+      hash: md5
+      md5: 2a0180b3bbcf6ba92c2044e3c1805dd4
+      size: 1096
+    - path: reports/evaluation.json
+      hash: md5
+      md5: d07486f3086d00a116c942b814b73ad2
+      size: 1762
+    - path: src/models/compare.py
+      hash: md5
+      md5: d0c91cfbffda0a0e6a1d01dfebd62270
+      size: 3122
+    outs:
+    - path: reports/model_comparison.csv
+      hash: md5
+      md5: a27d35318087de36c84ce65793e19e89
+      size: 441
+    - path: reports/model_comparison.md
+      hash: md5
+      md5: 39090223dd4b478e41114c2a9789ce39
+      size: 523
