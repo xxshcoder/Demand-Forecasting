@@ -1,0 +1,54 @@
+stages:
+  prepare:
+    cmd: python -m src.data.prepare
+    deps:
+      - data/raw/train.csv
+      - src/data
+      - params.yaml
+    outs:
+      - data/processed/sales.parquet
+
+  features:
+    cmd: python -m src.features.build
+    deps:
+      - data/processed/sales.parquet
+      - src/features
+      - params.yaml
+    outs:
+      - data/processed/features.parquet
+      - data/reference/train_features.parquet
+
+  train:
+    cmd: python -m src.models.train
+    deps:
+      - data/processed/features.parquet
+      - data/processed/sales.parquet
+      - src/models
+      - params.yaml
+    outs:
+      - reports/train_summary.json
+      - reports/predictions
+    metrics:
+      - reports/baseline_metrics.json
+
+  evaluate:
+    cmd: python -m src.models.evaluate
+    deps:
+      - reports/train_summary.json
+      - reports/predictions
+      - data/processed/sales.parquet
+      - src/models/evaluate.py
+      - params.yaml
+    metrics:
+      - reports/evaluation.json
+
+  compare:
+    cmd: python -m src.models.compare
+    deps:
+      - reports/evaluation.json
+      - src/models/compare.py
+      - params.yaml
+    metrics:
+      - reports/model_comparison.csv
+    outs:
+      - reports/model_comparison.md

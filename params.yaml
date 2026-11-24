@@ -1,0 +1,37 @@
+data:
+  raw_path: data/raw/train.csv
+  processed_path: data/processed/sales.parquet
+  fill_missing_days: true
+  missing_sales_strategy: forward_fill
+  outlier_clip_quantile: 0.999
+  country_holidays: US
+features:
+  lags: [1, 7, 14, 28]
+  rolling_windows: [7, 14, 28]
+  use_price: true
+  use_promo: true
+split:
+  val_days: 90
+  test_days: 90
+baselines:
+  moving_average_window: 7
+  last_week_lag: 7
+models:
+  linear: { alpha: 1.0 }
+  hgb: { max_iter: 300, learning_rate: 0.1, max_depth: null, random_state: 42 }
+  nn: { hidden: [128, 64], dropout: 0.1, lr: 0.001, epochs: 30, batch_size: 1024, seed: 42, device: cpu, embedding_dim: 8, early_stop_days: 14, early_stop_patience: 3 }
+mlflow:
+  experiment_name: demand-forecasting
+  registered_model_name: demand-forecaster
+  production_alias: production
+promotion:
+  primary_metric: mae
+  min_relative_improvement: 0.005
+  max_secondary_regression: 0.05
+monitoring:
+  psi_bins: 10
+  psi_threshold: 0.2
+  ks_pvalue_threshold: 0.01
+  recent_window_days: 7
+serving:
+  model_refresh_seconds: 60

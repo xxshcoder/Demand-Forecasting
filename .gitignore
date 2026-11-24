@@ -1,0 +1,50 @@
+# Data is versioned with DVC, never with Git.
+/data/*
+!/data/
+!/data/*/
+!/data/**/*.dvc
+!/data/.gitkeep
+!/data/raw/.gitkeep
+!/data/processed/.gitkeep
+!/data/reference/.gitkeep
+
+# Secrets and local state
+.env
+*.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# ML / DVC / reports generated locally
+mlruns/
+mlartifacts/
+mlflow.db
+*.db
+*.sqlite
+*.sqlite3
+*.parquet
+dvc.lock.tmp
+.dvc/cache/
+../dvc-remote/
+reports/predictions/
+reports/*.png
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

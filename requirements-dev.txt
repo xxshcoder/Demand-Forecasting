@@ -1,0 +1,6 @@
+# Pinned development/CI dependencies; includes everything in requirements.txt via make setup
+pytest==9.2.0
+pytest-cov==7.1.0
+ruff==0.17.6
+dvc==3.67.1
+pandera==0.36.0
